@@ -98,6 +98,13 @@ ___
 
 
 ___
+### *Analysis*
+    - Comparing CRNN models trained on data of different lengths, CRNN_29 had much better accuracy and f1 score on test dataset than CRNN_3. They have the values of 0.8230 and 0.6587 for accuracy, and 0.5376 and 0.4392 for f1 score, respectively. We have predicted that it is somewhat natural that longer piece of music represent the mood of the whole music better than shorter pieces of music. Since there are some cases that a single piece of music can have different moods (e.g., music that starts with a quiet intro and has a grand climax) or that multiple pieces of music make similar mood, a model trained with longer audio data would perform better. Thus, we can infer that the length of music used for training affects the performance of the model.
+    - Comparing MusiCNN models trained on data of different lengths, on the other hand, showed opposite results to CRNN. MusiCNN_29 had slightly smaller accuracy and quite smaller f1 score on test dataset than MusiCNN. They have the values of 0.7683 and 0.7770 for accuracy, and 0.5200 and 0.5523 for f1 score, respectively. We thought that a long dataset increases the compression rate in CNN, preventing it from storing much information about music. Since, the difference is not significant, we whould say they have similar and consistent training accuracy. We analyzed that the musically motivated CNN and the layers of MusiCNN captures feature well and consistently shows around 77% accuracy performance. That is, although we could have modified the layers even more to enhance the performance, the current layers are capturing features well, regardless of the length of the audio piece.
+    - Comparing CRNN model and MusiCNN model was also worthwhile. When it comes to traning with 29s-dataset, CRNN showed better performance, while when it comes to 3s-dataset, MusiCNN showed better performance. This indicates that with shorter audio data chunks, MusiCNN predicts the mood of the song better than CRNN. Also, we can find out that when the audio data chunks get long enough, CRNN will perform better than MusiCNN. Then, comparing CRNN_29 and MusiCNN_3 comes next. Although CRNN_29 had higher accuracy, MusiCNN_3 had higher values for the rest, including f1 score. So we can conclude that MusiCNN_3 has better performance than CRNN_29.
+
+
+___
 ### *Reference*
 
 - Data Set
