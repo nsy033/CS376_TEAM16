@@ -1,141 +1,111 @@
-# State-of-the-art Music Tagging Models
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Music mood tagging model with multi label classification using music feature data and pre-labeled data
 
-PyTorch implementation of state-of-the-art music tagging models :notes:
+### Team 16 Members
 
-[Demo and Docker image on Replicate](https://replicate.ai/minzwon/sota-music-tagging-models)
+	20190432 윤태양 Taeyang Yoon
 
-## Reference
+	20190606 정재령 Jaeryung Chung
 
-**Evaluation of CNN-based Automatic Music Tagging Models**, SMC 2020 [[arxiv](https://arxiv.org/abs/2006.00751)]
+	20190656 최승연 Seungyeon Choi
 
--- Minz Won, Andres Ferraro, Dmitry Bogdanov, and Xavier Serra
+___
+### *Motivation*
 
-
-**TL;DR**
-
-- If your dataset is relatively small: take advantage of domain knowledge using Musicnn.
-- If you want a simple but the best performing model: Short-chunk CNN with Residual connection (so-called *vgg*-ish model with a small receptive field)
-- If you want the best performance with generalization ability: Harmonic CNN
+Music tagging is important. With countless music being produced, it is impossible to explore the whole ocean of songs to find the right music you want. Thus, music recommendation based on music tagging is necessary for the user to make his/her own playlist. While objective features – tempo, pitch, instrument – are relatively easier to extract directly from music, subjective features – mood – are not something that could be analyzed directly from sound-wave itself. 
 
 
+___
+### ***Goal***
+
+Thus, our goal is to (1) process music data and (2) build few models (CRNN and Musicnn model) that produce multiple labels of mood and (3) compare among the models to find the best model with the highest accuracy of tagging. Also, we will (4) conduct machine learning experiments with different data sets and also the parameters and the architecture. With our model, users could get better recommendation of music and listen to the right song that fits the atmosphere.
+
+___
+### ***Preprocessing***
+- Library
+	- We used ***librosa library*** and ***pydub library*** to preprocess mp3(wav) data and convert it into npy format. ***Librosa library*** is one of the most widely-used library for processing audio data. 
+	We specifically used 
+
+	```jsx
+	librosa.core.load
+	```
+
+	to load an audio file as a floating point time series(.npy).
 
 
-## Available Models
-- **FCN** : Automatic Tagging using Deep Convolutional Neural Networks, Choi et al., 2016 [[arxiv](https://arxiv.org/abs/1606.00298)]
+- Tag adjustment
+    - The ***audionautix data*** had a total of 46 tags, but there were repeated tags and tags that never appear in any of the songs. So we got rid of the unneccessary tags and repeated ones, and reduces the total number of tags to 30. Also, with fma data set, we have manually labeled the data.
+
+
+___
+### ***Available Models***
 - **Musicnn** : End-to-end Learning for Music Audio Tagging at Scale, Pons et al., 2018 [[arxiv](https://arxiv.org/abs/1711.02520)]
-- **Sample-level CNN** : Sample-level Deep Convolutional Neural Networks for Music Auto-tagging Using Raw Waveforms, Lee et al., 2017 [[arxiv](https://arxiv.org/abs/1703.01789)]
-- **Sample-level CNN + Squeeze-and-excitation** : Sample-level CNN Architectures for Music Auto-tagging Using Raw Waveforms, Kim et al., 2018 [[arxiv](https://arxiv.org/pdf/1710.10451.pdf)]
 - **CRNN** : Convolutional Recurrent Neural Networks for Music Classification, Choi et al., 2016 [[arxiv](https://arxiv.org/abs/1609.04243)]
-- **Self-attention** : Toward Interpretable Music Tagging with Self-Attention, Won et al., 2019 [[arxiv](https://arxiv.org/abs/1906.04972)]
-- **Harmonic CNN** : Data-Driven Harmonic Filters for Audio Representation Learning, Won et al., 2020 [[pdf](https://ccrma.stanford.edu/~urinieto/MARL/publications/ICASSP2020_Won.pdf)]
-- **Short-chunk CNN** : Prevalent 3x3 CNN. So-called *vgg*-ish model with a small receptieve field.
-- **Short-chunk CNN + Residual** : Short-chunk CNN with residual connections.
+
+___
+### ***Evaluation***
+- Evaluation metrics we used are as follow. (TP, TN, FP, and FN refers to true positive, true negative, false positive, and false negative, respectively.)
+    - Accuracy : (TP+TN) / (TP+FP+TN+FN)
+    - Precision : TP / (TP+FP)
+    - Recall : TP / (TP+FN)
+    - F1 score : 2 * (Precision * Recall) / (Precision + Recall)
+    - Under these evaluation metrics, we tried to enhance the scores and the performances.
+
+___
+### *Results*
+
+- We used 836 of ***Audionautix*** source music either with 46-tags dataset set by the actual composer or with 30-tags dataset that we manually refined.
+- To increase the size of the dataset, ***fma*** audio data was added to the *audionautix* source, that we were able to form a dataset based on a total of 1,136 audio, which was based on 46 different tags.
+- In the final test, 836 audio sources containing only the refined 30 tags were used, and the music were distributed at a ratio of **train : valid : test = 636 : 100 : 100**.
+- The followings are links for Colab with a fixed version of the dataset and a result cell executed on each model.
+    - CRNN
+        - w/29s: [https://colab.research.google.com/drive/15Y13LiGcvkmJxo_lwPOWKWigmwhUUmMe?usp=sharing](https://colab.research.google.com/drive/15Y13LiGcvkmJxo_lwPOWKWigmwhUUmMe?usp=sharing)
+        - w/3s: [https://colab.research.google.com/drive/1oIfgXjR7cje3QylbZ1BO790fGLYsqD9N?usp=sharing](https://colab.research.google.com/drive/1oIfgXjR7cje3QylbZ1BO790fGLYsqD9N?usp=sharing)
+    - Musicnn
+        - w/29s: [https://colab.research.google.com/drive/13RB4MtXBGyDXpnv34bIO3W34plni0hYt?usp=sharing](https://colab.research.google.com/drive/13RB4MtXBGyDXpnv34bIO3W34plni0hYt?usp=sharing)
+        - w/3s: [https://colab.research.google.com/drive/1iHBg_qxZs4qstUxeLTE0AbFavmcjraXq?usp=sharing](https://colab.research.google.com/drive/1iHBg_qxZs4qstUxeLTE0AbFavmcjraXq?usp=sharing)
+- Scores
+    
+    |  | Loss | Accuracy | Precision | Recall | F1 |
+    | --- | --- | --- | --- | --- | --- |
+    | CRNN_29(validation) | 0.9078 | 0.8273 | 0.5440 | 0.5589 | 0.5473 |
+    | CRNN_29(test) | 0.9079 | 0.8230 | 0.5340 | 0.5497 | 0.5376 |
+    | CRNN_3(validation) | 0.9111 | 0.6840 | 0.4806 | 0.4600 | 0.4487 |
+    | CRNN_3(test) | 0.9134 | 0.6587 | 0.4793 | 0.4432 | 0.4392 |
+    | MusiCNN_29(validation) | 0.8958 | 0.7837 | 0.5443 | 0.5767 | 0.5368 |
+    | MusiCNN_29(test) | 0.8998 | 0.7683 | 0.5273 | 0.5607 | 0.5200 |
+    | MusiCNN_3(validation) | 0.9081 | 0.7743 | 0.5447 | 0.5799 | 0.5418 |
+    | MusiCNN_3(test) | 0.9089 | 0.7770 | 0.5545 | 0.5994 | 0.5523 |
+
+- Prediction
+    - We predicted the tags for the song named *Sunday Spirit* from *Audionautix* using each model, and the results are as follows. You can listen to the mood of *Sunday Spirit* through the link below.
+    - [https://drive.google.com/file/d/1k9aFCZ5FRpKj2WgcZrND6B3Vr6RvNvv_/view?usp=sharing](https://drive.google.com/file/d/1k9aFCZ5FRpKj2WgcZrND6B3Vr6RvNvv_/view?usp=sharing)
+
+✔️ CRNN_29
+
+![crnn_29](https://user-images.githubusercontent.com/76762181/173187211-5b47980f-6ec4-4000-a9e5-44f07253548a.png)
+
+✔️ CRNN_3
+
+![crnn_3](https://user-images.githubusercontent.com/76762181/173187209-48450554-992a-461a-921a-f16bdbe01f7c.png)
+
+✔️ MusiCNN_29
+
+![musicnn_29](https://user-images.githubusercontent.com/76762181/173187215-17f203e8-fb73-4e21-ab1e-5b7efa4ff95f.png)
+
+✔️ MusiCNN_3
+
+![musicnn_3](https://user-images.githubusercontent.com/76762181/173187214-a4e0fc35-377a-4742-af99-eb3ec778e790.png)
 
 
-## Requirements
-```
-conda create -n YOUR_ENV_NAME python=3.7
-conda activate YOUR_ENV_NAME
-pip install -r requirements.txt
-```
+___
+### *Reference*
 
-
-## Preprocessing
-STFT will be done on-the-fly. You only need to read and resample audio files into `.npy` files. 
-
-`cd preprocessing/`
-
-`python -u mtat_read.py run YOUR_DATA_PATH`
-
-## Training
-
-`cd training/`
-
-`python -u main.py --data_path YOUR_DATA_PATH`
-
-Options
-
-```
-'--num_workers', type=int, default=0
-'--dataset', type=str, default='mtat', choices=['mtat', 'msd', 'jamendo']
-'--model_type', type=str, default='fcn',
-				choices=['fcn', 'musicnn', 'crnn', 'sample', 'se', 'short', 'short_res', 'attention', 'hcnn']
-'--n_epochs', type=int, default=200
-'--batch_size', type=int, default=16
-'--lr', type=float, default=1e-4
-'--use_tensorboard', type=int, default=1
-'--model_save_path', type=str, default='./../models'
-'--model_load_path', type=str, default='.'
-'--data_path', type=str, default='./data'
-'--log_step', type=int, default=20
-```
-
-## Evaluation
-`cd training/`
-
-`python -u eval.py --data_path YOUR_DATA_PATH`
-
-Options
-
-```
-'--num_workers', type=int, default=0
-'--dataset', type=str, default='mtat', choices=['mtat', 'msd', 'jamendo']
-'--model_type', type=str, default='fcn',
-                choices=['fcn', 'musicnn', 'crnn', 'sample', 'se', 'short', 'short_res', 'attention', 'hcnn']
-'--batch_size', type=int, default=16
-'--model_load_path', type=str, default='.'
-'--data_path', type=str, default='./data'
-```
-
-## Performance Comparison
-Performances of SOTA models
-
-<figure><img src="figs/performance.png" width="550">
-
-Performances with perturbed inputs
-
-<img src="figs/generalization.png" width="550">
-
-
-
-## Citation
-```
-@inproceedings{won2020eval,
-  title={Evaluation of CNN-based automatic music tagging models},
-  author={Won, Minz and Ferraro, Andres and Bogdanov, Dmitry and Serra, Xavier},
-  booktitle={Proc. of 17th Sound and Music Computing},
-  year={2020}
-}
-```
-
-## License
-```
-MIT License
-
-Copyright (c) 2020 Music Technology Group, Universitat Pompeu Fabra. Code developed by Minz Won.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-
-## Upcoming Models
-Available upon request.
-
-minz.won@upf.edu
+- Data Set
+    - [https://paperswithcode.com/dataset/magnatagatune](https://paperswithcode.com/dataset/magnatagatune)
+    - [https://audionautix.com/](https://audionautix.com/)
+    - [https://github.com/mdeff/fma](https://github.com/mdeff/fma)
+- Data Pre-processing
+    - [https://dataunbox.com/split-audio-files-using-python/](https://dataunbox.com/split-audio-files-using-python/)
+- Prior Research
+    - [https://www.researchgate.net/publication/220723625_Tag_Integrated_Multi-Label_Music_Style_Classification_with_Hypergraph](https://www.researchgate.net/publication/220723625_Tag_Integrated_Multi-Label_Music_Style_Classification_with_Hypergraph)
+    - [https://github.com/minzwon/sota-music-tagging-models](https://github.com/minzwon/sota-music-tagging-models)
